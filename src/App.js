@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{Component} from 'react';
+import {BrowserRouter as Router,Route} from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Navigation from './components/navigationComp';
+import Formulario from './components/formularioComp';
+import Inicio from './components/inicioComp';
+import Ventas from './components/ventasComp';
+import VentaPrenda from './components/ventaPrendasComp';
+import VenderPrendas from './components/venderPrendasComp';
+
+
+class App extends Component{
+  render(){
+    return(
+      <Router>
+        <Navigation titulo="MIMADOS"/>
+        
+        <Route exact path="/" component={Inicio}/>
+        <Route exact path="/clientes" component={Formulario}/>
+        <Route exact path="/ventas" component={Ventas}/>
+        <Route exact path="/ventaPrendas/:id" component={VentaPrenda}/>
+        <Route exact path="/venderPrendas/:id" component={VenderPrendas}/>
+      </Router>
+    );
+  }
+};
+
 
 export default App;
