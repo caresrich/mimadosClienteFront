@@ -29,8 +29,6 @@ export default class VenderPrendas extends Component {
     componentDidMount() {
         //recuperando el id de cliente que viene en la url, recuperando con props
         idCliente = this.props.match.params.id;
-        
-        
         fetch(`http://localhost:4000/api/ventas/vender/${idCliente}`)
             .then(res => res.json())
             .then(data => {
@@ -50,13 +48,13 @@ export default class VenderPrendas extends Component {
                 })
                 console.log(this.state);
             })
-
-
     };
 
     addClick() {
         this.setState(prevState => ({
-            venta: [...prevState.venta, { idVenta: this.state.venta[0].idVenta, idPrenda: 1, detalle: "", cantidad: 1, precio: "" }]
+            venta: [...prevState.venta,
+                 { idVenta: this.state.venta[0].idVenta, idPrenda: 1, detalle: "", cantidad: 1, precio: "" }
+                ]
         }))
     };
 
