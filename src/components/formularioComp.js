@@ -27,49 +27,6 @@ class Formulario extends Component {
         this.fetchAllClient();
     };
 
-    
-    //to a new venta
-    newVenta = (idCliente,nombre) => {
-        let confirmarVenta=window.confirm(`Desea Realizar la Venta a ${nombre}`);
-        if(confirmarVenta===true)
-        {
-            let obj = {
-                idCliente: idCliente
-            }
-            fetch('http://localhost:4000/api/ventas', {
-                method: 'POST',
-                //Los headers son necesario o no funcionara el registro
-                body: JSON.stringify(obj),
-                headers: {
-                    'Acept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-    
-            })
-                .then(res => res.json())
-                .then(data => {
-                    window.M.toast({ html: data.message, classes: 'rounded' });
-                    if(data.exito)
-                    {
-                        
-                        this.setState({
-                            redirect:true,
-                            idCliente:idCliente
-                        });
-                    }
-                   
-                })
-                .catch(err => {
-                    window.M.toast({ html: err, classes: 'rounded' });
-                })
-        }
-        else
-        {
-            return;
-        }
-            
-    };
-
     //for the input search
     buscar(e) {
 
@@ -251,8 +208,7 @@ class Formulario extends Component {
                                                 <div className="card-action">
                                                     <button style={style} onClick={() => this.editClient(c.idCliente)} type="submit" className="waves-effect blue left btn"><i className="material-icons center">edit</i></button>
                                                     <Link to={`/ventaPrendas/${c.idCliente}`} type="submit" className="waves-effect grey darken-3 center btn"><i className="material-icons left">local_mall</i>Ventas</Link>
-                                                    <Link to={`/venderPrendas/${c.idCliente}`} className="waves-effect green right btn"><i className="material-icons center">local_grocery_store</i>v</Link>
-                                                    <Link onClick={() => this.newVenta(c.idCliente,c.nombre)} to="#" className="waves-effect green right btn"><i className="material-icons center">local_grocery_store</i></Link>
+                                                    <Link to={`/venderPrendas/${c.idCliente}`} className="waves-effect green right btn"><i className="material-icons center">local_grocery_store</i></Link>
                                                 </div>
                                             </div>
                                         </div>

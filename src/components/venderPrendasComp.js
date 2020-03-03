@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Link,Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 
 let idCliente;
 export default class VenderPrendas extends Component {
     constructor() {
         super();
         this.state = {
-            venta: [{ idVenta: "", idPrenda: "", detalle: "", cantidad: 0, precio: 0, }],
+            venta: [{ idPrenda: 1, detalle: "", cantidad: 1, precio: 0}],
             cliente: {
                 nombre: "",
                 apellidoP: "",
@@ -17,32 +17,32 @@ export default class VenderPrendas extends Component {
             montoDejado: 0,
             cantidadPrendas: 0,
             //estado para redireccionar a otro enlace en caso que se realize la venta satisfactotiamente
-            redirect:false
+            redirect: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.addNewVenta = this.addNewVenta.bind(this);
         this.calcularRecogeCon = this.calcularRecogeCon.bind(this);
+        this.alerta = this.alerta.bind(this);
     };
 
-    
+
 
     componentDidMount() {
         //recuperando el id de cliente que viene en la url, recuperando con props
         idCliente = this.props.match.params.id;
-        fetch(`http://localhost:4000/api/ventas/vender/${idCliente}`)
+        fetch(`http://localhost:4000/api/clientes/${idCliente}`)
             .then(res => res.json())
             .then(data => {
                 this.setState({
 
                     venta: [{
-                        idVenta: data.idVenta,
                         idPrenda: 1,
                         cantidad: 1
                     }],
                     cliente: {
-                        nombre: data.cliente.nombre,
-                        apellidoP: data.cliente.apellidoP,
-                        apellidoM: data.cliente.apellidoM
+                        nombre: data.nombre,
+                        apellidoP: data.apellidoP,
+                        apellidoM: data.apellidoM
                     }
 
                 })
@@ -53,8 +53,8 @@ export default class VenderPrendas extends Component {
     addClick() {
         this.setState(prevState => ({
             venta: [...prevState.venta,
-                 { idVenta: this.state.venta[0].idVenta, idPrenda: 1, detalle: "", cantidad: 1, precio: "" }
-                ]
+            { idPrenda: 1, detalle: "", cantidad: 1, precio: "" }
+            ]
         }))
     };
 
@@ -79,7 +79,7 @@ export default class VenderPrendas extends Component {
                                 <i className="material-icons prefix right">content_paste</i>
                             </div>
                             <div className="col s10">
-                                <input placeholder="DETALLE" name="detalle" type="text" className="validate" value={el.detalle || ''} onChange={this.handleChange.bind(this, i)} required />
+                                <input placeholder="DETALLES DE LA PRENDA" name="detalle" type="text" className="validate" value={el.detalle || ''} onChange={this.handleChange.bind(this, i)} required />
                             </div>
                         </div>
                     </div>
@@ -131,8 +131,7 @@ export default class VenderPrendas extends Component {
         for (let i of venta) {
             totalPrecio = totalPrecio + i.cantidad * i.precio;
         }
-        //sumando la  cantidad de prendas con for
-
+       
         this.setState({
             venta,
             total: totalPrecio,
@@ -154,13 +153,25 @@ export default class VenderPrendas extends Component {
         });
     }
 
-    addNewVenta(e) {
-        let montoCancelado={
-            montoCancelado:document.getElementById("montoDejado").value
+    alerta(e)
+    {
+        const con=window.confirm(`Realizar la venta a: ${this.state.cliente.nombre} ${this.state.cliente.apellidoP}`);
+        if(con)
+        {
+            this.addNewVenta();
         }
+    }
+
+
+    addNewVenta(e) {
+        
+        let montoCancelado = {
+            montoCancelado: document.getElementById("montoDejado").value
+        }
+        let ventaPrenda=this.state.venta;
         fetch(`http://localhost:4000/api/ventaPrendas/${idCliente}`, {
             method: 'POST',
-            body: JSON.stringify(this.state.venta,montoCancelado),
+            body: JSON.stringify({ventaPrenda,montoCancelado}),
             //Los headers son necesario o no funcionara el registro
             headers: {
                 'Acept': 'application/json',
@@ -169,53 +180,24 @@ export default class VenderPrendas extends Component {
         })
             .then(res => res.json())
             .then(data => {
-                window.M.toast({ html: data.message, classes: 'rounded' });
-                //si añadio con exito las prendas, entonces actualizamos el precio de la venta
+                
                 if (data.exito) {
-               
-                    let montoDejado={
-                        montoCancelado:document.getElementById("montoDejado").value
-                    }
-                  
-                    fetch(`http://localhost:4000/api/ventas/actualizarMontoVenta/${this.state.venta[0].idVenta}`, {
-                        method: 'PUT',
-
-                        //Los headers son necesario o no funcionara el registro
-                        headers: {
-                            'Acept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(montoDejado)
+                    this.setState({
+                        redirect: true
                     })
-                        .then(res => res.json())
-                        .then(data => {
-                            window.M.toast({ html: data.message, classes: 'rounded' });
-                            if(data.exito)
-                            {
-                                this.setState({
-                                    redirect:true
-                                })
-                            }
-                        })
-                        .catch(err => {
-
-                            window.M.toast({ html: err, classes: 'rounded' });
-                        });
+                    window.M.toast({ html: data.message, classes: 'rounded' });
                 }
-
-
             })
             .catch(err => {
-                console.log(err);
+                console.log(err.message);
                 window.M.toast({ html: err.message, classes: 'rounded' });
             });
 
-        e.preventDefault();
+       
     };
 
-    cancelVenta()
-    {
-        
+    cancelVenta() {
+
     };
 
 
@@ -223,9 +205,8 @@ export default class VenderPrendas extends Component {
         /*permite usar estos estilos dentro de una etiqueta*/
 
         //const styleInput = { textTransform: "uppercase" };
-        if(this.state.redirect)
-        {
-            return <Redirect to={`/ventaPrendas/${idCliente}`}/>
+        if (this.state.redirect) {
+            return <Redirect to={`/ventaPrendas/${idCliente}`} />
         }
 
         return (
@@ -268,7 +249,7 @@ export default class VenderPrendas extends Component {
                         <div className="row">
                             <div className="card-action">
 
-                                <button onClick={this.addNewVenta} className="waves-effect left green btn"><i className="material-icons left">local_mall</i>Vender</button>
+                                <button onClick={this.alerta} className="waves-effect left green btn"><i className="material-icons left">local_mall</i>Vender</button>
 
 
                                 <button type="reset" onClick={() => this.cancelVenta()} className="waves-effect red right btn"><i className="material-icons right">cancel</i>Cancel</button>
