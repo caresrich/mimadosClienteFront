@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Redirect,Link} from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import URL from '../url'
 
 
@@ -12,7 +12,7 @@ class Formulario extends Component {
             apellidoP: '',
             apellidoM: '',
             allClient: [],
-            redirect:false
+            redirect: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.addClient = this.addClient.bind(this);
@@ -180,9 +180,8 @@ class Formulario extends Component {
         /*permite usar estos estilos dentro de una etiqueta*/
         const style = { marginRight: "10px" };
         //usando if redireccionando a otra pagina en caso la venta haya sido exitosa
-        if(this.state.redirect)
-        {
-            return <Redirect to={`/venderPrendas/${this.state.idCliente}`}/>
+        if (this.state.redirect) {
+            return <Redirect to={`/venderPrendas/${this.state.idCliente}`} />
         }
 
         return (
@@ -192,12 +191,12 @@ class Formulario extends Component {
 
                 <div className="row">
                     {/**Aqui empieza la columna de la table de clientes */}
-                    <div className="col s9">
+                    <div className="col s12 m12 l9">
                         <div className="row">
                             {
                                 this.state.allClient.map(c => {
                                     return (
-                                        <div className="col s4 m4" key={c.idCliente}>
+                                        <div className="col s12 m6 l4" key={c.idCliente}>
                                             <div className="card blue-grey darken-1">
                                                 <div className="card-content white-text">
                                                     <span className="new badge red" ><strong>{c.idCliente}</strong></span>
@@ -207,7 +206,7 @@ class Formulario extends Component {
                                                 </div>
                                                 <div className="card-action">
                                                     <button style={style} onClick={() => this.editClient(c.idCliente)} type="submit" className="waves-effect blue left btn"><i className="material-icons center">edit</i></button>
-                                                    <Link to={`/ventaPrendas/${c.idCliente}`} type="submit" className="waves-effect grey darken-3 center btn"><i className="material-icons left">local_mall</i>Ventas</Link>
+                                                    <Link to={`/ventaPrendas/${c.idCliente}`} className="waves-effect grey darken-3 center btn"><i className="material-icons left">local_mall</i>Ventas</Link>
                                                     <Link to={`/venderPrendas/${c.idCliente}`} className="waves-effect green right btn"><i className="material-icons center">local_grocery_store</i></Link>
                                                 </div>
                                             </div>
@@ -219,7 +218,7 @@ class Formulario extends Component {
                         </div>
                     </div>
                     {/* aqui empiez ala columna del formulario */}
-                    <div className="col s3">
+                    <div className="col s12 m3">
 
                         <div className="card nav-wrapper grey lighten-4 col s12">
                             <form>
@@ -238,21 +237,26 @@ class Formulario extends Component {
                                 <div className="input-field">
                                     <i className="material-icons prefix">account_circle</i>
                                     <input value={this.state.nombre} placeholder="" name="nombre" onChange={this.handleChange} id="icon_prefix" type="text" className="validate" required />
-                                    <label htmlFor="icon_prefix">NOMBRE</label>
+                                    <label className="active" htmlFor="icon_prefix">NOMBRE</label>
                                 </div>
                                 <div className="input-field">
                                     <i className="material-icons prefix">account_circle</i>
                                     <input value={this.state.apellidoP} placeholder="" name="apellidoP" onChange={this.handleChange} id="icon_telephone" type="text" className="validate" required />
-                                    <label htmlFor="icon_telephone">APELLIDO PATERNO</label>
+                                    <label className="active" htmlFor="icon_telephone">APELLIDO PATERNO</label>
                                 </div>
                                 <div className="input-field">
                                     <i className="material-icons prefix">account_circle</i>
                                     <input value={this.state.apellidoM} placeholder="" name="apellidoM" onChange={this.handleChange} id="icon_apM" type="text" className="validate" />
-                                    <label htmlFor="icon_apM">APELLIDO MATERNO</label>
+                                    <label className="active" htmlFor="icon_apM">APELLIDO MATERNO</label>
                                 </div>
+
                                 <div className="card-action">
-                                    <button type="submit" className="waves-effect green btn"><i className="material-icons left">add</i>Registrar</button>
-                                    <button type="reset" onClick={() => this.estadoEnVacio()} className="waves-effect red right btn"><i className="material-icons center">cancel</i></button>
+                                    <div className="row">
+                                        <div className="col s12">
+                                            <button type="submit" className="waves-effect right green btn"><i className="material-icons left">add</i>Registrar</button>
+                                            <button type="reset" onClick={() => this.estadoEnVacio()} className="waves-effect red left btn"><i className="material-icons center">cancel</i></button>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </form>

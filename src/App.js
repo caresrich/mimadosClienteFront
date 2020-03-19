@@ -7,6 +7,7 @@ import Inicio from './components/inicioComp';
 import Ventas from './components/ventasComp';
 import VentaPrenda from './components/ventaPrendasComp';
 import VenderPrendas from './components/venderPrendasComp';
+import AgregarMonto from './components/agregarMontoComp';
 
 
 class App extends Component{
@@ -20,6 +21,7 @@ class App extends Component{
         <Route exact path="/ventas" component={Ventas}/>
         <Route exact path="/ventaPrendas/:id" component={VentaPrenda}/>
         <Route exact path="/venderPrendas/:id" component={VenderPrendas}/>
+        <Route exact path="/agregarMonto/:id" component={AgregarMonto}/>
       </Router>
     );
   }
